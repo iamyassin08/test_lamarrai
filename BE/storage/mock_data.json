@@ -1,0 +1,18 @@
+[
+    {
+      "id": 1,
+      "window": "Window 3, Floor 2",
+      "severity": "High"
+    },
+    {
+      "id": 2,
+      "window": "Window 1, Floor 1",
+      "severity": "Medium"
+    },
+    {
+      "id": 3,
+      "window": "Window 5, Floor 3",
+      "severity": "Low"
+    }
+  ]
+  
