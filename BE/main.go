@@ -1,22 +1,47 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
-	"test_lamarria/be/router"
-
-	"github.com/gin-gonic/gin"
+	"net/http"
+	"os"
 )
 
-func main() {
-	// Initialize the Gin router
-	r := gin.Default()
+// Anomaly represents a window anomaly
+type Anomaly struct {
+	ID       int    `json:"id"`
+	Window   string `json:"window"`
+	Severity string `json:"severity"`
+}
 
-	// Setup the routes
-	router.SetupRoutes(r)
-
-	// Start the server on port 8080
-	err := r.Run(":8080")
+// Fetch anomaly data from a mock JSON file
+func getAnomalies(w http.ResponseWriter, r *http.Request) {
+	file, err := os.Open("anomalies.json")
 	if err != nil {
-		log.Fatal("Unable to start the server: ", err)
+		http.Error(w, "Could not open data file", http.StatusInternalServerError)
+		return
 	}
+	defer file.Close()
+
+	var anomalies []Anomaly
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&anomalies)
+	if err != nil {
+		http.Error(w, "Could not decode data", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(anomalies)
+}
+
+func main() {
+	http.HandleFunc("/api/anomalies", getAnomalies)
+
+	// Serve static files (frontend)
+	http.Handle("/", http.FileServer(http.Dir("../frontend/dist")))
+
+	fmt.Println("Server is running on http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

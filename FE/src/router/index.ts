@@ -1,9 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
-import ProjectSlides from "@/components/projects/ProjectSlides.vue";
-
-
 
 import "preline/preline";
 import { type IStaticMethods } from "preline/preline";
